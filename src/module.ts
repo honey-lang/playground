@@ -47,4 +47,9 @@ export function runHoney(source: string, print_result: boolean = true): string {
     return decodeString(honey.exports.last_popped as unknown as number, len);
 }
 
+export function version(): string {
+    // todo: get version length rather than hardcoding 5
+    return decodeString(honey.exports.version(), 5);
+}
+
 globalThis.runHoney = runHoney;

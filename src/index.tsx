@@ -3,7 +3,7 @@ import "./index.css";
 import { render } from "solid-js/web";
 import { createSignal } from "solid-js";
 import { MonacoEditor } from "./editor";
-import { runHoney } from "./module";
+import { runHoney, version } from "./module";
 import { createShortcut } from "@solid-primitives/keyboard";
 const root = document.getElementById("app");
 
@@ -63,6 +63,7 @@ function App() {
     <div class="w-screen h-screen flex flex-col items-center gap-4">
       <div class="flex flex-col items-center p-4">
         <h1 class="text-6xl text-primary font-extrabold uppercase">Honey</h1>
+        <h3 class="text-xl italic">v{version()}</h3>
         <p class="text-xl italic">Run Honey code in the browser using WASM</p>
       </div>
       <div id="editor" class="relative">
