@@ -2,7 +2,7 @@
   "name": "honey-playground",
   "version": "0.1.0",
   "description": "A small playground for running Honey in the browser",
-  "homepage": "https://honey-lang.github.io/honey/",
+  "homepage": "https://honey-lang.github.io/playground/",
   "scripts": {
     "start": "vite",
     "dev": "vite",
