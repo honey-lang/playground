@@ -8,10 +8,27 @@ import { createShortcut } from "@solid-primitives/keyboard";
 const root = document.getElementById("app");
 
 const DefaultCode = `
-let a = 1;
-let b = 2;
+const language = {
+    name: "honey",
+    version: "v0.1.0",
+    description: "A small embeddable scripting language, built in Zig",
+    versions: [
+        { version: "v0.0.1", description: "Initial release" },
+        { version: "v0.1.0", description: "Added support for lists & dictionaries" },
+    ],
+};
 
-@println("Result: ", a + b);
+// name: "honey"
+const name = language.name;
+// version: v0.1.0
+const version = language["version"];
+
+@println("Honey ", version, " - ", name);
+@println("Description: ", language.description);
+@println("Versions:");
+for (language.versions) |version_data| {
+    @println(" - ", version_data.version, ": ", version_data.description, if (version_data.version == version) " (latest)" else "");
+}
 `.trimStart();
 
 function App() {
