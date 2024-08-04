@@ -1,9 +1,9 @@
-import { createSignal, onCleanup, JSX, onMount, mergeProps } from "solid-js";
+import { createSignal, createEffect, onCleanup, JSX, onMount, mergeProps } from "solid-js";
 import { editor as Editor } from "monaco-editor";
 import loader, { Monaco } from "@monaco-editor/loader";
 
-
 export interface MonacoEditorProps {
+    language?: string
     value?: string
     loadingState?: JSX.Element
     class?: string
@@ -17,6 +17,15 @@ export interface MonacoEditorProps {
     onMount?: (monaco: Monaco, editor: Editor.IStandaloneCodeEditor) => void
     onBeforeUnmount?: (monaco: Monaco, editor: Editor.IStandaloneCodeEditor) => void
   }
+
+  const HoneyTheme: Editor.IStandaloneThemeData = {
+    base: "vs-dark",
+    inherit: true,
+    rules: [],
+    colors: {
+      "editor.background": "#0A101B",
+    },
+  };
   
   export const MonacoEditor = (inputProps: MonacoEditorProps) => {
     const props = mergeProps(
@@ -27,18 +36,18 @@ export interface MonacoEditorProps {
         saveViewState: true,
       },
       inputProps,
-    );
-    let containerRef!: HTMLDivElement;
+    )
   
-    const [monaco, setMonaco] = createSignal<Monaco>();
-    const [editor, setEditor] = createSignal<Editor.IStandaloneCodeEditor>();
+    let containerRef!: HTMLDivElement
   
-    let abortInitialization: (() => void) | undefined
+    const [monaco, setMonaco] = createSignal<Monaco>()
+    const [editor, setEditor] = createSignal<Editor.IStandaloneCodeEditor>()
+  
+    let abortInitialization: (() => void) | undefined = undefined;
   
     onMount(async () => {
-      const loadMonaco = loader.init()
-      abortInitialization = () => loadMonaco.cancel()
-  
+      const loadMonaco = loader.init();
+      abortInitialization = () => loadMonaco.cancel();
       try {
         const monaco = await loadMonaco
         const editor = monaco.editor.create(
@@ -49,41 +58,47 @@ export interface MonacoEditorProps {
           },
           props.overrideServices,
         );
-        setMonaco(monaco);
-        setEditor(editor);
-        monaco.editor.defineTheme("honey", {
-          base: "vs-dark",
-          inherit: true,
-          rules: [],
-          colors: {
-            "editor.background": "#0A101B",
-          },
-        })
+        setMonaco(monaco)
+        setEditor(editor)
+        props.onMount?.(monaco, editor)
   
+        monaco.editor.defineTheme("honey", HoneyTheme);
         monaco.editor.setTheme("honey");
         // todo: custom language highlighting
-        monaco.editor.setModelLanguage(editor.getModel()!, "rust");
+        monaco.editor.setModelLanguage(editor.getModel()!, props.language ?? "text");
+
         editor.setValue(props.value ?? "");
       } catch (error: any) {
-        console.error("Could not initialize Monaco", error);
+        if (error?.type === "cancelation") {
+          return
+        }
+        console.error("Could not initialize Monaco: ", error);
       }
-    })
+    });
   
     onCleanup(() => {
-      const _editor = editor()
+      const _editor = editor();
       if (!_editor) {
-        abortInitialization?.()
-        return
+        abortInitialization?.();
+        return;
       }
   
-      props.onBeforeUnmount?.(monaco()!, _editor)
-      _editor.getModel()?.dispose()
-      _editor.dispose()
+      props.onBeforeUnmount?.(monaco()!, _editor);
+      _editor.getModel()?.dispose();
+      _editor.dispose();
+    })
+  
+    createEffect(() => {
+      const _editor = editor();
+      if (!_editor || typeof props.value === "undefined" || !_editor.getOption(monaco()!.editor.EditorOption.readOnly)) {
+        return;
+      }
+      _editor.setValue(props.value);
     });
-    
+  
     return (
       <div ref={containerRef} class={props.class} style={{ width: props.width, height: props.height }}>
         {props.loadingState}
       </div>
-    )
+    );
   }

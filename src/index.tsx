@@ -66,7 +66,7 @@ function App() {
         <p class="text-xl italic">Run Honey code in the browser using WASM</p>
       </div>
       <div id="editor" class="relative">
-        <MonacoEditor value={input()} width="95vw" height="60vh" class="resize-y overflow-auto rounded-md" onChange={setInput} options={{
+        <MonacoEditor language="rust" value={input()} width="95vw" height="60vh" class="resize-y overflow-auto rounded-md" onChange={setInput} options={{
             lineNumbers: "on",
             renderLineHighlight: "none",
             automaticLayout: true,
