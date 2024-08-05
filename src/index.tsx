@@ -84,7 +84,9 @@ function App() {
             lineNumbers: "off",
             renderLineHighlight: "none",
             scrollbar: { vertical: "hidden", verticalScrollbarSize: 0}, 
-
+            guides: {
+              indentation: false,
+            },
             readOnly: true,
             domReadOnly: true,
           }} />
