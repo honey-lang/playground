@@ -10,17 +10,18 @@ const root = document.getElementById("app");
 const DefaultCode = `
 const language = {
     name: "honey",
-    version: "v0.1.0",
+    version: "v0.1.1",
     description: "A small embeddable scripting language, built in Zig",
     versions: [
         { version: "v0.0.1", description: "Initial release" },
         { version: "v0.1.0", description: "Added support for lists & dictionaries" },
+        { version: "v0.1.1", description: "Better error messages!" },
     ],
 };
 
 // name: "honey"
 const name = language.name;
-// version: v0.1.0
+// version: v0.1.1
 const version = language["version"];
 
 @println("Honey ", version, " - ", name);
@@ -28,8 +29,7 @@ const version = language["version"];
 @println("Versions:");
 for (language.versions) |version_data| {
     @println(" - ", version_data.version, ": ", version_data.description, if (version_data.version == version) " (latest)" else "");
-}
-`.trimStart();
+}`.trimStart();
 
 function App() {
   let [input, setInput] = createSignal(DefaultCode);
