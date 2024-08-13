@@ -15,6 +15,10 @@ const honey = await loadHoney({
         const result = prompt(question) ?? "";
         return encodeString(result);
       },
+      js_alert(ptr: number, len: number): void {
+        const message = decodeString(ptr, len);
+        alert(message);
+      },
       js_random_bytes(count: number): number {
         const ptr = honey.exports.allocU8(count);
         let slice = new Uint8Array(memory.buffer, ptr, count);
