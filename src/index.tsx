@@ -24,15 +24,11 @@ const name = language.name;
 // version: v0.1.1
 const version = language["version"];
 
-fn print_version(version_data: object) {
-    @println(" - ", version_data.version, ": ", version_data.description, if (version_data.version == version) " (latest)" else "");
-}
-
 @println("Honey ", version, " - ", name);
 @println("Description: ", language.description);
 @println("Versions:");
 for (language.versions) |version_data| {
-  print_version(version_data);
+  @println(" - ", version_data.version, ": ", version_data.description, if (version_data.version == version) " (latest)" else "");
 }`.trimStart();
 
 function App() {
